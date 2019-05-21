@@ -14,14 +14,23 @@ class Env(object):
 
     def print(self):
         board = self.__board
-        print("-" * ((D + 1) * D + 1))
+        colors = [".", "X", "O"]
+        for i in range(D):
+            for j in range(D):
+                print(f"{colors[board[i, j]]} ", end="")
+            print()
+
+    def print_big(self):
+        board = self.__board
+        sep_line = "-" * ((D + 1) * D + 1)
+        print(sep_line)
         for i in range(D):
             print("|", end="")
             for j in range(D):
                 c = COLORS[board[i, j]]
                 print(f" {c} |", end="")
             print()
-            print("-" * ((D + 1) * D + 1))
+            print(sep_line)
 
     def place(self, color: Color, i: int, j: int) -> bool:
         """
