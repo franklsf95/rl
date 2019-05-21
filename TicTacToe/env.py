@@ -36,10 +36,13 @@ class Env(object):
         """
         Returns false if the specified location is occupied.
         """
-        if self.__board[i, j] != 0:
+        try:
+            if self.__board[i, j] != 0:
+                return False
+            self.__board[i, j] = color
+            return True
+        except IndexError:
             return False
-        self.__board[i, j] = color
-        return True
 
     def reward(self, color: Color) -> float:
         """
