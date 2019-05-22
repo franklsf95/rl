@@ -101,3 +101,7 @@ class Env(object):
             return "The game ended in a draw."
         else:
             return f"Player {COLORS[self.winner]} is the winner."
+
+    def get_state(self) -> State:
+        return 0
+
