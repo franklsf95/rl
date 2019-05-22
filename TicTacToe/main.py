@@ -2,6 +2,7 @@
 
 from collections import Counter
 import logging
+import numpy as np
 import time
 from typing import Optional
 
@@ -49,9 +50,8 @@ def play_game(playerX: Player, playerO: Player, train=False, print_game=False) -
 
     print_env()
     if train:
-        for agent in [playerX, playerO]:
-            agent.update_value()
-            agent.reset_state_history()
+        playerX.update_value(env)
+        playerO.update_value(env)
     return env
 
 
@@ -60,8 +60,9 @@ def main():
     agentX = Agent(X)
     agentO = Agent(O)
 
+    logging.disable(logging.DEBUG)
     logging.info("Begin training episodes.")
-    n_training_episodes = round(N_ITERATIONS * 0.1)
+    n_training_episodes = round(N_ITERATIONS * TRAINING_PCT)
     for t in range(n_training_episodes):
         play_game(agentX, agentO, train=True)
         n_iterations = t + 1
@@ -86,6 +87,7 @@ def main():
         winners.update({env.winner: 1})
     logging.info("Expect Agent X (1) to be stronger than the random player O (2).")
     logging.info(f"Testing result: {winners}")
+    logging.disable(logging.NOTSET)
 
     logging.info("Training complete. Game is ready to play.")
     while True:

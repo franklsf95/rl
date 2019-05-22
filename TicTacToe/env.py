@@ -32,17 +32,17 @@ class Env(object):
             print()
             print(sep_line)
 
-    def place(self, color: Color, i: int, j: int) -> bool:
+    def can_place(self, i: int, j: int) -> bool:
         """
         Returns false if the specified location is occupied.
         """
         try:
-            if self.__board[i, j] != 0:
-                return False
-            self.__board[i, j] = color
-            return True
+            return self.__board[i, j] == 0
         except IndexError:
             return False
+
+    def place(self, color: Color, i: int, j: int) -> bool:
+        self.__board[i, j] = color
 
     def reward(self, color: Color) -> float:
         """
@@ -103,5 +103,11 @@ class Env(object):
             return f"Player {COLORS[self.winner]} is the winner."
 
     def get_state(self) -> State:
-        return 0
-
+        board = self.__board
+        h = 0
+        k = 1
+        for i in range(D):
+            for j in range(D):
+                h += k * board[i, j]
+                k *= 3
+        return h

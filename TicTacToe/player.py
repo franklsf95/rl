@@ -18,13 +18,13 @@ class Player(object):
         return f"Player {COLORS[self.color]}"
 
     def act(self, env: Env):
-        # Place a piece randomly on the board
-        for _ in range(D * D):
-            if self.__act_once(env):
-                return
-
-    def __act_once(self, env: Env) -> bool:
-        i = np.random.randint(0, D)
-        j = np.random.randint(0, D)
-        return env.place(self.color, i, j)
-
+        locations = []
+        for i in range(D):
+            for j in range(D):
+                if env.can_place(i, j):
+                    locations.append((i, j))
+        if len(locations) == 0:
+            return
+        idx = np.random.choice(len(locations))
+        i, j = locations[idx]
+        env.place(self.color, i, j)

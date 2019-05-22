@@ -19,10 +19,14 @@ class HumanPlayer(Player):
             coords = list(map(int, inp.split()))
             i = coords[0]
             j = coords[1]
+        except EOFError:
+            print("Bye!")
+            exit(0)
         except (IndexError, ValueError) as ex:
             print(f"Invalid input: {ex}.")
             return self.act(env)
-        ret = env.place(self.color, i, j)
-        if not ret:
+        if env.can_place(i, j):
+            env.place(self.color, i, j)
+        else:
             print("Error: Cannot place at this coordinate.")
             return self.act(env)
