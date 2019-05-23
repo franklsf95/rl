@@ -16,10 +16,9 @@ logging.basicConfig(
     format="%(asctime)s [%(levelname)s] %(message)s", level=logging.DEBUG
 )
 
-N_ITERATIONS = 10000
-TRAINING_PCT = 0.8
-VALIDATION_PCT = 0.1
-TESTING_PCT = 0.1
+N_TRAINING_EPISODES = 10000
+N_VALIDATION_EPISODES = 1000
+N_TESTING_EPISODES = 1000
 
 
 def play_game(playerX: Player, playerO: Player, train=False, print_game=False) -> Env:
@@ -62,8 +61,7 @@ def main():
 
     logging.disable(logging.DEBUG)
     logging.info("Begin training episodes.")
-    n_training_episodes = round(N_ITERATIONS * TRAINING_PCT)
-    for t in range(n_training_episodes):
+    for t in range(N_TRAINING_EPISODES):
         play_game(agentX, agentO, train=True)
         n_iterations = t + 1
         if n_iterations % 1000 == 0:
@@ -71,18 +69,18 @@ def main():
 
     logging.info("Begin validation episodes.")
     winners = Counter()
-    n_validation_episodes = round(N_ITERATIONS * VALIDATION_PCT)
-    for t in range(n_validation_episodes):
+    for t in range(N_VALIDATION_EPISODES):
         env = play_game(agentX, agentO)
         winners.update({env.winner: 1})
     logging.info("Expect both players to be equally strong.")
     logging.info(f"Validation result: {winners}")
 
+    logging.info("Turning off random exploration for testing")
+    agentX.epsilon = 0
     logging.info("Begin testing episodes")
     winners = Counter()
-    n_testing_episodes = round(N_ITERATIONS * TESTING_PCT)
     random_player = Player(O)
-    for t in range(n_testing_episodes):
+    for t in range(N_TESTING_EPISODES):
         env = play_game(agentX, random_player)
         winners.update({env.winner: 1})
     logging.info("Expect Agent X (1) to be stronger than the random player O (2).")
