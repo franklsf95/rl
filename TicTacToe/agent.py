@@ -46,9 +46,11 @@ class Agent(Player):
     def record_state(self, state: State):
         self.state_history.append(state)
 
-    def update_value(self, env: Env):
-        # Learn.
-        reward = env.reward(self.color)
+    def learn(self, won: bool):
+        """
+        Update the value function from the outcome of this game.
+        """
+        reward = 1 if won else 0
         target = reward
         for s in reversed(self.state_history):
             v = self.value[s]

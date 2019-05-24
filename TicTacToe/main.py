@@ -49,8 +49,8 @@ def play_game(playerX: Player, playerO: Player, train=False, print_game=False) -
 
     print_env()
     if train:
-        playerX.update_value(env)
-        playerO.update_value(env)
+        for player in [playerX, playerO]:
+            player.learn(env.winner == player.color)
     return env
 
 
