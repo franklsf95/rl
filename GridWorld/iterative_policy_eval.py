@@ -1,20 +1,16 @@
 #!/usr/bin/env python3
 
-import abc
 import logging
 import numpy as np
 from typing import Dict, Iterable, Tuple
 
 from defs import *
 from env import Env
+from policy import Policy, UniformlyRandomPolicy, FixedPolicy
 
 logging.basicConfig(
     format="%(asctime)s [%(levelname)s] %(message)s", level=logging.DEBUG
 )
-
-Prob = float
-Value = float
-ValueFn = Dict[State, Value]
 
 
 def print_value_fn(env: Env, value: ValueFn):
@@ -30,45 +26,9 @@ def print_value_fn(env: Env, value: ValueFn):
         print()
 
 
-class Policy(abc.ABC):
-    @abc.abstractmethod
-    def actions(self, env: Env, s: State) -> Iterable[Tuple[Prob, Action]]:
-        pass
-
-
-class UniformlyRandomPolicy(Policy):
-    def __str__(self):
-        return "Uniformly Random Policy"
-
-    def actions(self, env: Env, s: State) -> Iterable[Tuple[Prob, Action]]:
-        env.state = s
-        actions = env.available_actions()
-        if len(actions) == 0:
-            return []
-        p = 1 / len(actions)
-        return [(p, a) for a in actions]
-
-
-class FixedPolicy(Policy):
-    def __str__(self):
-        return "Fixed Policy"
-
-    def actions(self, env: Env, s: State) -> Iterable[Tuple[Prob, Action]]:
-        policy = {
-            (0, 0): Action.Right,
-            (0, 1): Action.Right,
-            (0, 2): Action.Right,
-            (1, 0): Action.Up,
-            (1, 2): Action.Right,
-            (2, 0): Action.Up,
-            (2, 1): Action.Right,
-            (2, 2): Action.Right,
-            (2, 3): Action.Up,
-        }
-        return [(1, policy[s])] if s in policy else []
-
-
-def evaluate_policy(env: Env, policy: Policy, gamma: float = 1.0) -> ValueFn:
+def evaluate_policy(
+    env: Env, policy: Policy, gamma: float = 1.0, print_value: bool = False
+) -> ValueFn:
     """
     gamma: Discount factor.
     """
@@ -100,8 +60,9 @@ def evaluate_policy(env: Env, policy: Policy, gamma: float = 1.0) -> ValueFn:
         if max_change < EPSILON:
             break
     logging.info(f"Evaluation converged in {n_iter} iterations.")
-    print(f"Value function for {policy}:")
-    print_value_fn(env, value_fn)
+    if print_value:
+        print(f"Value function for {policy}:")
+        print_value_fn(env, value_fn)
 
 
 def main():
@@ -109,8 +70,26 @@ def main():
     env = Env.standard()
     env.print()
 
-    evaluate_policy(env, UniformlyRandomPolicy())
-    evaluate_policy(env, FixedPolicy(), gamma=0.9)
+    evaluate_policy(env, UniformlyRandomPolicy(), print_value=True)
+    evaluate_policy(
+        env,
+        FixedPolicy(
+            env,
+            {
+                (0, 0): Action.Right,
+                (0, 1): Action.Right,
+                (0, 2): Action.Right,
+                (1, 0): Action.Up,
+                (1, 2): Action.Right,
+                (2, 0): Action.Up,
+                (2, 1): Action.Right,
+                (2, 2): Action.Right,
+                (2, 3): Action.Up,
+            },
+        ),
+        gamma=0.9,
+        print_value=True,
+    )
 
 
 if __name__ == "__main__":

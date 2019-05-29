@@ -73,7 +73,7 @@ class Env(object):
                         # Omit trivial penalty step rewards
                         s = f"{r:.0f}"
                     else:
-                        s = "."
+                        s = "_"  # Underscore denotes step penalty
                 elif len(self.actions.get((i, j), [])) == 0:
                     # Roadblock
                     s = "[]"
