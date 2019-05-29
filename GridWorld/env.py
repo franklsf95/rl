@@ -26,7 +26,7 @@ class Env(object):
             self.state = (i + 1, j)
         elif action == Action.Left:
             self.state = (i, j - 1)
-        elif action == Action.Down:
+        elif action == Action.Right:
             self.state = (i, j + 1)
         self.__assert_valid_state()
         return self.rewards.get(self.state, 0)
@@ -39,7 +39,7 @@ class Env(object):
             self.state = (i - 1, j)
         elif action == Action.Left:
             self.state = (i, j + 1)
-        elif action == Action.Down:
+        elif action == Action.Right:
             self.state = (i, j - 1)
         self.__assert_valid_state()
 
