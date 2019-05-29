@@ -19,8 +19,7 @@ class UniformlyRandomPolicy(Policy):
         return "Uniformly Random Policy"
 
     def actions(self, env: Env, s: State) -> Iterable[Tuple[Prob, Action]]:
-        env.state = s
-        actions = env.available_actions()
+        actions = env.available_actions(s)
         if len(actions) == 0:
             return []
         p = 1 / len(actions)

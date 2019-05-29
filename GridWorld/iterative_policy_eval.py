@@ -27,7 +27,7 @@ def print_value_fn(env: Env, value: ValueFn):
 
 
 def evaluate_policy(
-    env: Env, policy: Policy, gamma: float = 1.0, print_value: bool = False
+    env: Env, policy: Policy, gamma: float = 0.9, print_value: bool = False
 ) -> ValueFn:
     """
     gamma: Discount factor.
@@ -57,12 +57,13 @@ def evaluate_policy(
             value_change = np.abs(new_value - old_value)
             if max_change < value_change:
                 max_change = value_change
-        if max_change < EPSILON:
+        if max_change < VALUE_CONVERGENCE_EPSILON:
             break
     logging.info(f"Evaluation converged in {n_iter} iterations.")
     if print_value:
         print(f"Value function for {policy}:")
         print_value_fn(env, value_fn)
+    return value_fn
 
 
 def main():
@@ -70,7 +71,7 @@ def main():
     env = Env.standard()
     env.print()
 
-    evaluate_policy(env, UniformlyRandomPolicy(), print_value=True)
+    evaluate_policy(env, UniformlyRandomPolicy(), gamma=1.0, print_value=True)
     evaluate_policy(
         env,
         FixedPolicy(

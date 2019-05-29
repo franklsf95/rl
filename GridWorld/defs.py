@@ -21,4 +21,4 @@ class Action(Enum):
         return str(self.value)
 
 
-EPSILON = 1e-4  # Convergence threshold
+VALUE_CONVERGENCE_EPSILON = 1e-3  # Convergence threshold

@@ -2,7 +2,7 @@
 
 import logging
 import numpy as np
-from typing import Dict, Iterable, List
+from typing import Dict, Iterable, List, Optional
 
 from defs import *
 
@@ -15,8 +15,8 @@ class Env(object):
         self.rewards: Dict[State, Reward] = {}
         self.actions: Dict[State, List[Action]] = {}
 
-    def available_actions(self) -> List[Action]:
-        return self.actions.get(self.state, [])
+    def available_actions(self, state: Optional[State] = None) -> List[Action]:
+        return self.actions.get(state or self.state, [])
 
     def move(self, action: Action) -> Reward:
         if action not in self.actions[self.state]:
