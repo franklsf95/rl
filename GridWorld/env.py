@@ -2,7 +2,7 @@
 
 import logging
 import numpy as np
-from typing import Dict, Iterable
+from typing import Dict, Iterable, List
 
 from defs import *
 
@@ -14,6 +14,9 @@ class Env(object):
         self.state = start
         self.rewards: Dict[State, Reward] = {}
         self.actions: Dict[State, List[Action]] = {}
+
+    def available_actions(self) -> List[Action]:
+        return self.actions.get(self.state, [])
 
     def move(self, action: Action) -> Reward:
         if action not in self.actions[self.state]:
@@ -52,6 +55,9 @@ class Env(object):
 
     def is_game_over(self) -> bool:
         return self.is_terminal(self.state)
+
+    def all_states(self) -> List[State]:
+        return [(i, j) for j in range(self.cols) for i in range(self.rows)]
 
     def print(self):
         for i in range(self.rows):
@@ -99,13 +105,13 @@ class Env(object):
 
         env = cls(rows, cols, (2, 0))
         env.rewards = {(0, 3): 1, (1, 3): -1}
+        roadblocks = {(1, 1)}
         env.actions = {
             (i, j): list(actions_for(i, j))
             for j in range(cols)
             for i in range(rows)
-            if (i, j) not in env.rewards
+            if (i, j) not in env.rewards and (i, j) not in roadblocks
         }
-        env.actions.pop((1, 1))  # Roadblock
         return env
 
     @classmethod
