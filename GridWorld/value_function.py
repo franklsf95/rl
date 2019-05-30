@@ -26,6 +26,15 @@ def print_value_fn(env: Env, value: ValueFn):
         print()
 
 
+def value_of_action(
+    env: Env, state: State, action: Action, value_fn: ValueFn, gamma: float
+) -> float:
+    env.state = state
+    r = env.move(action)
+    v = r + gamma * value_fn[env.state]
+    return v
+
+
 def evaluate_policy(
     env: Env, policy: Policy, gamma: float = 0.9, print_value: bool = False
 ) -> ValueFn:
@@ -49,9 +58,7 @@ def evaluate_policy(
             # Compute new value
             new_value = 0
             for p, a in policy.actions(env, s):
-                env.state = s
-                r = env.move(a)
-                v = r + gamma * value_fn[env.state]
+                v = value_of_action(env, s, a, value_fn, gamma)
                 new_value += p * v
             value_fn[s] = new_value
             value_change = np.abs(new_value - old_value)

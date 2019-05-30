@@ -7,7 +7,7 @@ from typing import Dict, Iterable, Tuple
 
 from defs import *
 from env import Env
-from iterative_policy_eval import evaluate_policy
+from value_function import evaluate_policy, value_of_action
 from policy import FixedPolicy
 
 logging.basicConfig(
@@ -32,9 +32,7 @@ def optimize_policy(env: Env, policy: FixedPolicy, gamma: float = 0.9):
             new_action = None
             best_value = -np.inf
             for a in env.available_actions(s):
-                env.state = s
-                r = env.move(a)
-                v = r + gamma * value_fn[env.state]
+                v = value_of_action(env, s, a, value_fn, gamma)
                 if best_value < v:
                     new_action = a
                     best_value = v
