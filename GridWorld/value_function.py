@@ -29,6 +29,24 @@ def print_value_fn(env: Env, value: ValueFn):
 def value_of_action(
     env: Env, state: State, action: Action, value_fn: ValueFn, gamma: float
 ) -> float:
+    if WINDY:
+        v = 0
+        available_actions = env.available_actions(state)
+        n_actions = len(available_actions)
+        for a in available_actions:
+            if a == action:
+                p = 1 / 2
+            else:
+                p = 1 / 2 / n_actions
+        v += p * value_of_action_deterministic(env, state, a, value_fn, gamma)
+        return v
+    else:
+        return value_of_action_deterministic(env, state, action, value_fn, gamma)
+
+
+def value_of_action_deterministic(
+    env: Env, state: State, action: Action, value_fn: ValueFn, gamma: float
+) -> float:
     env.state = state
     r = env.move(action)
     v = r + gamma * value_fn[env.state]

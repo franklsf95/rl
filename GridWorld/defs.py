@@ -21,4 +21,8 @@ class Action(Enum):
         return str(self.value)
 
 
-VALUE_CONVERGENCE_EPSILON = 1e-3  # Convergence threshold
+# Threshold for value function interation convergence.
+VALUE_CONVERGENCE_EPSILON = 1e-3
+# If true, then taking an action will only succeed 1/2 times, and end with a random action the other 1/2 times.
+WINDY = True
+
